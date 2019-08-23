@@ -33,13 +33,13 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const genre = genres.find(c => c.id === parseInt(req.params.id));
-  if (!genre) return res.status(404).send('The genre with the given ID was not found.');
-
   const { error } = validateGenre(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
+
+  const result = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name }, { new: true })
+
+  if (!genre) return res.status(404).send('The genre with the given ID was not found.');
   
-  genre.name = req.body.name; 
   res.send(genre);
 });
 
