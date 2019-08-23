@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
-
-const Joi = require('joi');
 const genres = require('./routes/genres');
 const express = require('express');
 const app = express();
 
-mongoose.connect('mongodb://localhost/vidly')
+mongoose.connect('mongodb://localhost/vidly', {useNewUrlParser: true})
     .then(() => console.log('Connected to mongoDB...'))
     .catch( err => console.error('Could not connect to MongoDB...'));
 

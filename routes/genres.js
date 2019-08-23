@@ -1,9 +1,9 @@
+const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
-
 const express = require('express');
 const router = express.Router();
 
-const Genre = new mongoose.model('Genre', new mongoose.Schema({
+const Genre = mongoose.model('Genre', new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -11,12 +11,6 @@ const Genre = new mongoose.model('Genre', new mongoose.Schema({
     maxlength: 50
   }
 }));
-
-const genres = [
-  { id: 1, name: 'Action' },  
-  { id: 2, name: 'Horror' },  
-  { id: 3, name: 'Romance' },  
-];
 
 router.get('/', async (req, res) => {
   const genres = await Genre.find().sort('name');
@@ -43,19 +37,19 @@ router.put('/:id', async (req, res) => {
   res.send(genre);
 });
 
-router.delete('/:id', (req, res) => {
-  const genre = genres.find(c => c.id === parseInt(req.params.id));
-  if (!genre) return res.status(404).send('The genre with the given ID was not found.');
+router.delete('/:id', async (req, res) => {
+  const genre = await Genre.findByIdAndRemove(req.params.id);
 
-  const index = genres.indexOf(genre);
-  genres.splice(index, 1);
+  if (!genre) return res.status(404).send('The genre with the given ID was not found.');
 
   res.send(genre);
 });
 
-router.get('/:id', (req, res) => {
-  const genre = genres.find(c => c.id === parseInt(req.params.id));
+router.get('/:id', async (req, res) => {
+  const genre = await Genre.findById(req.params.id);
+  
   if (!genre) return res.status(404).send('The genre with the given ID was not found.');
+
   res.send(genre);
 });
 
